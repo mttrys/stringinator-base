@@ -15,11 +15,16 @@ const last = function(array, n = 1) {
 
 // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
 const indexOf = function(array, target, fromIndex=0) {
-  // Your code goes here
+  for (let index = fromIndex; index <= array.length; index++){
+    if (array[index] === target){
+      return index;
+    }
+  }
+  return -1;
 };
 
 const isArrayLike = function(obj) {
-  // Your code goes here
+  return typeof obj.length === 'number' && obj.length >= 0;
 };
 
 // The cornerstone of a functional library -- iterate all elements, pass each to a callback function.
