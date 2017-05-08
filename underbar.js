@@ -30,14 +30,27 @@ const isArrayLike = function(obj) {
 // The cornerstone of a functional library -- iterate all elements, pass each to a callback function.
 // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
 const each = function(obj, callback=identity) {
-  // Your code goes here
+  if (isArrayLike(obj)){
+    for(let i = 0; i < obj.length; i++){
+      callback(obj[i], i, obj);
+    }
+  } else {
+    for(let key in obj){
+      callback(obj[key], key, obj);
+    }
+  }
 };
 
 // Return the results of applying the callback to each element.
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
 const map = function(obj, callback=identity) {
-  // Your code goes here
+  const results = [];
+  each(obj, (currentValue, currentIndexOrKey, obj) => {
+    results.push(callback(currentValue, currentIndexOrKey, obj));
+  });
+  return results;
 };
+
 
 // Return an array of the values o a certain property in the collection.
 // E.g. given an array of people objects, return an array of just their ages.
