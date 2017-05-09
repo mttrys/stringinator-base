@@ -24,7 +24,8 @@ const indexOf = function(array, target, fromIndex=0) {
 };
 
 const isArrayLike = function(obj) {
-  return typeof obj.length === 'number' && obj.length >= 0;
+  let length = obj.length
+  return typeof length === 'number' && length >= 0;
 };
 
 // The cornerstone of a functional library -- iterate all elements, pass each to a callback function.
@@ -65,12 +66,24 @@ const pluck = function(obj, key) {
 // value. The callback is invoked with four arguments:
 // (accumulator, value, index|key, collection).
 const reduce = function(obj, callback=identity, initialValue) {
-  // Your code goes here
+  if (initialValue === undefined){
+    initialValue = obj[0];
+    obj = obj.slice(1);
+  }
+
+  let accumulator = initialValue;
+  each(obj, (value, indexOrKey)  => {
+    accumulator = callback(accumulator, value, indexOrKey, obj)
+  });
+
+  return accumulator;
 };
 
 // Return true if the object contains the target.
 const contains = function(obj, target) {
-  // Your code goes here
+  return reduce(obj, (wasFound, item) => {
+    return wasFound || item === target
+  }, false)
 };
 
 // Return true if all the elements / object values are accepted by the callback.
