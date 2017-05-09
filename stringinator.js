@@ -17,11 +17,11 @@ const hasChar = function(str, target) {
 };
 
 const isOnlyDigits = function(str) {
-  return _.every(str.split(''), char => !isNaN(char));
+  return _.every(str, char => !isNaN(char));
 };
 
 const filterToOnlyDigits = function(str) {
-  return _.filter(str.split(''), char => !isNaN(char)).join('').trim();
+  return _.filter(str, char => !isNaN(char)).join('').trim();
 };
 
 const truncateString = function(val, maxLength) {
@@ -37,7 +37,7 @@ const truncateLongItems = function(obj, maxLength) {
 
 const countChars = function(str) {
   let chars = {};
-  _.each(str.split(''), letter => {
+  _.each(str, letter => {
     if (letter in chars){
       chars[letter]++;
     }
@@ -49,7 +49,7 @@ const countChars = function(str) {
 };
 
 const dedup = function(str) {
-  return _.uniq(str.split('')).join('')
+  return _.uniq(str).join('')
 };
 
 module.exports = {
