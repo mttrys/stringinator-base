@@ -10,22 +10,21 @@ const first = function(array, n = 1) {
 
 // Returns the last n elements of the given array.
 const last = function(array, n = 1) {
-  return n = undefined ? array[array.length - 1] : array.slice(-n)
+  return n = undefined ? array[array.length - 1] : array.slice(array.length - n, array.length)
 };
 
 // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
 const indexOf = function(array, target, fromIndex=0) {
-  for (let index = fromIndex; index <= array.length; index++){
-    if (array[index] === target){
-      return index;
+  for (let i = fromIndex; i <= array.length; i++){
+    if (array[i] === target){
+      return i;
     }
   }
   return -1;
 };
 
 const isArrayLike = function(obj) {
-  let length = obj.length
-  return typeof length === 'number' && length >= 0;
+  return obj.hasOwnProperty('length') && obj.length >= 0;
 };
 
 // The cornerstone of a functional library -- iterate all elements, pass each to a callback function.
@@ -46,8 +45,8 @@ const each = function(obj, callback=identity) {
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
 const map = function(obj, callback=identity) {
   const results = [];
-  each(obj, (currentValue, currentIndexOrKey, obj) => {
-    results.push(callback(currentValue, currentIndexOrKey, obj));
+  each(obj, (element, index, obj) => {
+    results.push(callback(element, index, obj));
   });
   return results;
 };
@@ -66,16 +65,16 @@ const pluck = function(obj, key) {
 // value. The callback is invoked with four arguments:
 // (accumulator, value, index|key, collection).
 const reduce = function(obj, callback=identity, initialValue) {
-  if (initialValue === undefined){
-    initialValue = obj[0];
-    obj = obj.slice(1);
-  }
-
   let accumulator = initialValue;
-  each(obj, (value, indexOrKey)  => {
-    accumulator = callback(accumulator, value, indexOrKey, obj)
+  let initialize = accumulator === undefined;
+  each(obj, function(element, index, obj){
+    if (initialize) {
+      accumulator = element;
+      initialize = false;
+    } else {
+      accumulator = callback(accumulator, element, index, obj);
+    }
   });
-
   return accumulator;
 };
 
@@ -103,10 +102,10 @@ const some = function(obj, callback=identity) {
 
 // Return an array with all elements / object values that are accepted by the callback.
 const filter = function(obj, callback=identity) {
-  let result = [];
-  each(obj, function(el){
-    if(callback(el)){
-      result.push(el);
+  const result = [];
+  each(obj, item => {
+    if (callback(item)) {
+      result.push(item);
     }
   });
   return result;
@@ -114,7 +113,7 @@ const filter = function(obj, callback=identity) {
 
 // Return object without the elements / object valuesthat were rejected by the callback.
 const reject = function(arr, callback=identity) {
-  return filter(arr, (value) => !callback(value))
+  return filter(arr, item => !callback(item));
 };
 
 // De-duplicates (de-dups) the elements / object values.
