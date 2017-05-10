@@ -5,17 +5,20 @@ const identity = function(val) {
 
 // Returns the first n elements of the given array.
 const first = function(array, n = 1) {
-  return n === undefined ? array[0] : array.slice(0,n)
+  return n === 1 ? array[0] : array.slice(0,n)
 };
 
 // Returns the last n elements of the given array.
 const last = function(array, n = 1) {
-  return n = undefined ? array[array.length - 1] : array.slice(array.length - n, array.length)
+  return n === 1 ? array[array.length - 1] : array.slice(Math.max(0, array.length - n));
 };
+
+let arr = [0,1,2,3,4];
+console.log(last(arr, 6))
 
 // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
 const indexOf = function(array, target, fromIndex=0) {
-  for (let i = fromIndex; i <= array.length; i++){
+  for (let i = fromIndex; i < array.length; i++){
     if (array[i] === target){
       return i;
     }
@@ -44,10 +47,8 @@ const each = function(obj, callback=identity) {
 // Return the results of applying the callback to each element.
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
 const map = function(obj, callback=identity) {
-  const results = [];
-  each(obj, (element, index, obj) => {
-    results.push(callback(element, index, obj));
-  });
+  let results = [];
+  each(obj, (element, key, obj) => results.push(callback(element, key, obj)));
   return results;
 };
 
@@ -55,7 +56,7 @@ const map = function(obj, callback=identity) {
 // Return an array of the values of a certain property in the collection.
 // E.g. given an array of people objects, return an array of just their ages.
 const pluck = function(obj, key) {
-  return map(obj, item => item[key]);
+  return map(obj, element => element[key]);
 };
 
 // Reduces collection to a value which is the accumulated result of running
@@ -67,21 +68,23 @@ const pluck = function(obj, key) {
 const reduce = function(obj, callback=identity, initialValue) {
   let accumulator = initialValue;
   let initialize = accumulator === undefined;
-  each(obj, function(element, index, obj){
-    if (initialize) {
-      accumulator = element;
+
+  each(obj, (value, indexOrKey, obj) => {
+    if (initialize){
+      accumulator = value;
       initialize = false;
     } else {
-      accumulator = callback(accumulator, element, index, obj);
+      accumulator = callback(accumulator, value, indexOrKey, obj);
     }
-  });
+  })
   return accumulator;
 };
+
 
 // Return true if the object contains the target.
 const contains = function(obj, target) {
   return reduce(obj, (wasFound, item) => {
-    return wasFound || item === target
+    return wasFound || item === target;
   }, false)
 };
 
@@ -111,7 +114,7 @@ const filter = function(obj, callback=identity) {
   return result;
 };
 
-// Return object without the elements / object valuesthat were rejected by the callback.
+// Return object without the elements / object values that were rejected by the callback.
 const reject = function(arr, callback=identity) {
   return filter(arr, item => !callback(item));
 };
