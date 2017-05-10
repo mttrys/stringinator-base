@@ -13,16 +13,13 @@ const last = function(array, n = 1) {
   return n === 1 ? array[array.length - 1] : array.slice(Math.max(0, array.length - n));
 };
 
-let arr = [0,1,2,3,4];
-console.log(last(arr, 6))
-
 // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
 const indexOf = function(array, target, fromIndex=0) {
-  for (let i = fromIndex; i < array.length; i++){
-    if (array[i] === target){
-      return i;
+  each(array, (element, index) => {
+    if (index >= fromIndex && element === target){
+      return index;
     }
-  }
+  });
   return -1;
 };
 

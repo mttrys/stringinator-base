@@ -2,7 +2,7 @@ const _ = require('../../underbar');
 
 describe('first()', () => {
   it('returns the first element of an array', () => {
-    expect(_.first([0,1,2,3,4])).toEqual([0]);
+    expect(_.first([0,1,2,3,4])).toEqual(0);
   });
 
   it('returns the first 2 elements of an array', () => {
