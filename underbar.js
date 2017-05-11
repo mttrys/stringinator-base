@@ -15,13 +15,12 @@ const last = function(array, n = 1) {
 
 // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
 const indexOf = function(array, target, fromIndex=0) {
-  let result = -1;
-  each(array, (item, index) => {
-    if (index >= fromIndex && item === target && result === -1){
-      result = index;
+  for (let i = fromIndex; i < array.length; i++){
+    if (array[i] === target){
+      return i;
     }
-  });
-  return result;
+  }
+  return -1;
 };
 
 const isArrayLike = function(obj) {
@@ -114,7 +113,7 @@ const filter = function(obj, callback=identity) {
 
 // Return object without the elements / object values that were rejected by the callback.
 const reject = function(arr, callback=identity) {
-  return filter(arr, item => !callback(item));
+  return filter(arr, item => !callback(item)) ;
 };
 
 // De-duplicates (de-dups) the elements / object values.
